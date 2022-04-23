@@ -1,6 +1,19 @@
 /* This file is for your main application CSS */
 @import "./phoenix.css";
 
+#chat-container {
+    display: flex;
+    justify-content: space-between;
+    height: 500px;
+}
+
+#chat-messages {
+    flex-grow: 1;
+    padding: 1em;
+    margin: -1em 1em 1em -1em;
+    border: 1px solid #cccccc;
+}
+
 /* Alerts and form errors used by phx.new */
 .alert {
   padding: 15px;

@@ -13,7 +13,8 @@ defmodule EpherimealChat.Application do
       # Start the PubSub system
       {Phoenix.PubSub, name: EpherimealChat.PubSub},
       # Start the Endpoint (http/https)
-      EpherimealChatWeb.Endpoint
+      EpherimealChatWeb.Endpoint,
+      EpherimealChatWeb.Presence
       # Start a worker by calling: EpherimealChat.Worker.start_link(arg)
       # {EpherimealChat.Worker, arg}
     ]
