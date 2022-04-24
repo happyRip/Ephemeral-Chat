@@ -14,6 +14,16 @@
     border: 1px solid #cccccc;
 }
 
+#chat-messages p {
+    margin: 0;
+    padding: 0;
+}
+
+#user-list p {
+    margin: 0;
+    padding: 0;
+}
+
 /* Alerts and form errors used by phx.new */
 .alert {
   padding: 15px;
