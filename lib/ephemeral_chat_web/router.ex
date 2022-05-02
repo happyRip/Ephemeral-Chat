@@ -17,7 +17,9 @@ defmodule EphemeralChatWeb.Router do
   scope "/", EphemeralChatWeb do
     pipe_through :browser
 
-    get "/", PageController, :index
+    # get "/", PageController, :index
+    live "/", PageLive, :index
+    live "/:id", RoomLive, :index
   end
 
   # Other scopes may use custom stacks.

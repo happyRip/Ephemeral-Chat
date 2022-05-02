@@ -1,6 +1,57 @@
 /* This file is for your main application CSS */
 @import "./phoenix.css";
 
+#chat-container {
+    display: flex;
+    flex-direction: column;
+}
+
+#message-container {
+    display: flex;
+    justify-content: space-between;
+    gap: 1em;
+    height: 65vh;
+}
+
+#chat-messages {
+    border: 1px solid #cccccc;
+    flex-grow: 1;
+    padding: 1em;
+}
+
+#chat-messages p {
+    margin: 0;
+    padding: 0;
+}
+
+#user-list {
+    border: 1px solid #cccccc;
+    padding: 1em;
+}
+
+#user-list p {
+    margin: 0;
+    padding: 0 1em;
+}
+
+#chat-form {
+    padding: 1em 0;
+}
+
+#text-input {
+    border: 1px solid #cccccc;
+    border-radius: 0;
+}
+
+.title {
+    all: unset;
+}
+
+.title:hover {
+    color: inherit;
+    cursor: pointer;
+}
+
 /* Alerts and form errors used by phx.new */
 .alert {
   padding: 15px;
