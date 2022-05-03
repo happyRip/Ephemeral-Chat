@@ -1,6 +1,14 @@
 /* This file is for your main application CSS */
 @import "./phoenix.css";
 
+.scroll-view {
+    overflow-y: auto;
+}
+
+.thin-border {
+    border: 1px solid #cccccc;
+}
+
 #chat-container {
     display: flex;
     flex-direction: column;
@@ -10,15 +18,12 @@
     display: flex;
     justify-content: space-between;
     gap: 1em;
-    height: 65vh;
+    height: 70vh;
 }
 
 #chat-messages {
-    border: 1px solid #cccccc;
     flex-grow: 1;
     padding: 1em;
-    overflow-y: scroll;
-    overflow: auto;
 }
 
 #chat-messages p {
@@ -27,7 +32,6 @@
 }
 
 #user-list {
-    border: 1px solid #cccccc;
     padding: 1em;
 }
 
@@ -41,7 +45,6 @@
 }
 
 #text-input {
-    border: 1px solid #cccccc;
     border-radius: 0;
 }
 
