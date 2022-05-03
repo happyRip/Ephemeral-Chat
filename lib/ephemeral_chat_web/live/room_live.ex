@@ -13,20 +13,16 @@ defmodule EphemeralChatWeb.RoomLive do
       Presence.track(self(), topic, username, %{})
     end
 
-    {
-      :ok,
-      assign(socket,
-        room_id: room_id,
-        topic: topic,
-        username: username,
-        message: "",
-        messages: [],
-        user_list: [],
-        temporary_assigns: [
-          messages: []
-        ]
-      )
-    }
+    {:ok,
+     assign(socket,
+       room_id: room_id,
+       topic: topic,
+       username: username,
+       message: "",
+       messages: [],
+       user_list: [],
+       temporary_assigns: [messages: []]
+     )}
   end
 
   @impl true
@@ -49,8 +45,10 @@ defmodule EphemeralChatWeb.RoomLive do
   end
 
   @impl true
-  def handle_info(%{event: "presence_diff", payload: %{joins: joins, leaves:
-  leaves}}, socket) do
+  def handle_info(
+        %{event: "presence_diff", payload: %{joins: joins, leaves: leaves}},
+        socket
+      ) do
     join_messages =
       joins
       |> Map.keys()
@@ -65,11 +63,15 @@ defmodule EphemeralChatWeb.RoomLive do
         create_message("#{username} left")
       end)
 
-    user_list = Presence.list(socket.assigns.topic)
+    user_list =
+      Presence.list(socket.assigns.topic)
       |> Map.keys()
 
-    {:noreply, assign(socket, messages: join_messages ++ leave_messages,
-    user_list: user_list)}
+    {:noreply,
+     assign(socket,
+       messages: join_messages ++ leave_messages,
+       user_list: user_list
+     )}
   end
 
   def display_message(%{type: :system, uuid: uuid, content: content}) do
