@@ -7,7 +7,7 @@ on:
     - cron: '0 * * * *'
   workflow_dispatch:
 env:
-  CHAT_URL: 'https://broken-shape-8192.fly.dev/'
+  CHAT_URL: 'https://chat.happy.rip'
 jobs:
   status:
     name: Test if site is reachable
@@ -17,7 +17,7 @@ jobs:
         id: get-response
         run: |
           echo "::set-output name=code::$( \
-          curl -IL $CHAT_URL 2> /dev/null \
+          curl -IL ${CHAT_URL} 2> /dev/null \
           | head -n 1 \
           | cut  -d $' ' -f 2 )"
       - name: Validate app status
