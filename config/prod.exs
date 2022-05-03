@@ -12,7 +12,8 @@ import Config
 config :ephemeral_chat, EphemeralChatWeb.Endpoint,
 #   cache_static_manifest: "priv/static/cache_manifest.json",
   http: [port: {:system, "PORT"}],
-  url: [host: "new_application_name.slrs.io", port: 80],
+  url: [host: "chat.happy.rip", port: 80],
+  check_origin: ["https://chat.happy.rip"],
   cache_static_manifest: "priv/static/cache_manifest.json",
   server: true,
   code_reloader: false
