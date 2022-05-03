@@ -17,4 +17,8 @@ jobs:
           curl -IL $CHAT_URL 2> /dev/null \
           | head -n 1 \
           | cut  -d $' ' -f 2 )"
-      - run: echo ${{ steps.get-response.outputs.code }}
+      - name: Validate app status
+        run: |
+          RESPONSE_CODE="${{ steps.get-response.outputs.code }}"
+          echo "Response code: ${RESPONSE_CODE}"
+          [[ $RESPONSE_CODE -ge 300 ]] && exit 1
