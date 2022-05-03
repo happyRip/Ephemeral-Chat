@@ -1,5 +1,8 @@
 name: Test Chat Active
 on:
+  push:
+    paths:
+      - '.github/workflows/status.yml'
   schedule:
     - cron: '0 * * * *'
   workflow_dispatch:
@@ -19,6 +22,5 @@ jobs:
           | cut  -d $' ' -f 2 )"
       - name: Validate app status
         run: |
-          RESPONSE_CODE="${{ steps.get-response.outputs.code }}"
-          echo "Response code: ${RESPONSE_CODE}"
-          [[ $RESPONSE_CODE -ge 300 ]] && exit 1
+          echo "${{ steps.get-response.outputs.code }}" \
+          | grep -q '^2'
