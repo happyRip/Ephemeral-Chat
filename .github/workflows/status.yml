@@ -11,7 +11,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Get response code
+        id: get-response
         run: |
+          echo "::set-output name=code::$( \
           curl -IL $CHAT_URL 2> /dev/null \
           | head -n 1 \
-          | cut  -d $' ' -f 2
+          | cut  -d $' ' -f 2 )"
+      - run: echo ${{ steps.get-response.outputs.code }}
