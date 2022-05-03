@@ -1,5 +1,13 @@
 name: Fly Deploy
-on: [push]
+on:
+  push:
+    branches:
+      - master
+    paths-ignore:
+      - '**.md'
+  pull-request:
+    paths-ignore:
+      - '**.md'
 env:
   FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
 jobs:
