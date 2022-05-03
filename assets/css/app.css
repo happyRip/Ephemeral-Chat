@@ -17,6 +17,8 @@
     border: 1px solid #cccccc;
     flex-grow: 1;
     padding: 1em;
+    overflow-y: scroll;
+    overflow: auto;
 }
 
 #chat-messages p {
