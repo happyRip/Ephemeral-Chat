@@ -2,7 +2,6 @@ defmodule EphemeralChatWeb.RoomLive do
   use EphemeralChatWeb, :live_view
   alias EphemeralChatWeb, as: ChatWeb
   alias ChatWeb.{Endpoint, Presence}
-  require Logger
 
   @impl true
   def mount(%{"id" => room_id}, _session, socket) do
@@ -34,7 +33,6 @@ defmodule EphemeralChatWeb.RoomLive do
   def handle_event("submit_message", %{"chat" => %{"message" => message}}, socket) do
     username = socket.assigns.username
     message = create_message(message, username)
-    Logger.info(message: message)
     ChatWeb.Endpoint.broadcast(socket.assigns.topic, "new-message", message)
 
     {:noreply, assign(socket, message: "")}
@@ -42,7 +40,6 @@ defmodule EphemeralChatWeb.RoomLive do
 
   @impl true
   def handle_event("form_updated", %{"chat" => %{"message" => message}}, socket) do
-    Logger.info(form: message)
     {:noreply, assign(socket, message: message)}
   end
 
