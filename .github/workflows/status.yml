@@ -2,6 +2,7 @@ name: Test Chat Active
 on:
   schedule:
     - cron: '0 * * * *'
+  workflow_dispatch:
 env:
   CHAT_URL: 'https://broken-shape-8192.fly.dev/'
 jobs:
