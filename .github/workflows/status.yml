@@ -1,0 +1,16 @@
+name: Test Chat Active
+on:
+  schedule:
+    - cron: '0 * * * *'
+env:
+  CHAT_URL: 'https://broken-shape-8192.fly.dev/'
+jobs:
+  status:
+    name: Test if site is reachable
+    runs-on: ubuntu-latest
+    steps:
+      - name: Get response code
+        run: |
+          curl -IL $CHAT_URL 2> /dev/null \
+          | head -n 1 \
+          | cut  -d $' ' -f 2
