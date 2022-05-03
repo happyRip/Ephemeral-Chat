@@ -1,5 +1,8 @@
 # EphemeralChat
 
+[![Deploy](https://github.com/happyRip/Ephemeral-Chat/actions/workflows/deploy.yml/badge.svg?branch=main)](https://github.com/happyRip/Ephemeral-Chat/actions/workflows/deploy.yml)
+[![Website Active](https://github.com/happyRip/Ephemeral-Chat/actions/workflows/status.yml/badge.svg)](https://github.com/happyRip/Ephemeral-Chat/actions/workflows/status.yml)
+
 To start your Phoenix server:
 
   * Install dependencies with `mix deps.get`

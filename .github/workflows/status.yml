@@ -1,4 +1,4 @@
-name: Test Chat Active
+name: Website Active
 on:
   push:
     paths:
