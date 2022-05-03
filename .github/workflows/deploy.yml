@@ -5,9 +5,13 @@ on:
       - master
     paths-ignore:
       - '**.md'
-  pull-request:
+      - '**.yml'
+      - '!.github/workflows/deploy.yml'
+  pull_request:
     paths-ignore:
       - '**.md'
+      - '**.yml'
+      - '!.github/workflows/deploy.yml'
 env:
   FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
 jobs:
