@@ -1,11 +1,12 @@
 <p>Currently chatting in <strong><%= @room_id %></strong>
-    as <strong><%= @username %></strong></p>
+    as <strong><%= username = @username %></strong></p>
 
 <div id="chat-container">
   <div id="message-container">
     <div id="chat-messages" class="thin-border scroll-view" phx-update="append">
       <%= for message <- @messages do %>
-        <%= display_message(message) %>
+        <%= Map.put(message, :current_user, username)
+            |> display_message() %>
       <% end %>
     </div>
 

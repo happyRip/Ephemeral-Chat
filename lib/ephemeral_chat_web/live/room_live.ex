@@ -29,7 +29,7 @@ defmodule EphemeralChatWeb.RoomLive do
   def handle_event("submit_message", %{"chat" => %{"message" => message}}, socket) do
     username = socket.assigns.username
     message = create_message(message, username)
-    ChatWeb.Endpoint.broadcast(socket.assigns.topic, "new-message", message)
+    ChatWeb.Endpoint.broadcast!(socket.assigns.topic, "new-message", message)
 
     {:noreply, assign(socket, message: "")}
   end
@@ -76,13 +76,27 @@ defmodule EphemeralChatWeb.RoomLive do
 
   def display_message(%{type: :system, uuid: uuid, content: content}) do
     ~E"""
-    <p id="<%= uuid %>"><em><%= content %></em></p>
+    <p id="<%= uuid %>" class="system-message" style="text-align:center">
+      <em><%= content %></em>
+    </p>
+    """
+  end
+
+  def display_message(%{uuid: uuid, content: content, username: username,
+  current_user: current_user}) when username == current_user do
+    ~E"""
+    <p id="<%= uuid %>" class="own-message">
+      <%= content %>
+    </p>
     """
   end
 
   def display_message(%{uuid: uuid, content: content, username: username}) do
     ~E"""
-    <p id="<%= uuid %>"><strong><%= username %></strong>: <%= content %></p>
+    <p id="<%= uuid %>" class="user-message">
+      <small><%= username %></small><br />
+      <%= content %>
+    </p>
     """
   end
 

@@ -1,6 +1,24 @@
 /* This file is for your main application CSS */
 @import "./phoenix.css";
 
+.user-message, .own-message {
+    /* display: inline-block; */
+    width: 50%;
+    padding: 0.5em 1em;
+}
+
+.user-message {
+    border: 2px solid red;
+    margin-left: auto;
+    margin-right: 0;
+}
+
+.own-message {
+    border: 2px solid green;
+    margin-right: auto;
+    margin-left: 0;
+}
+
 .scroll-view {
     overflow-y: auto;
 }
@@ -28,7 +46,6 @@
 
 #chat-messages p {
     margin: 0;
-    padding: 0;
 }
 
 #user-list {
