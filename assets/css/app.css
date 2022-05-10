@@ -1,22 +1,58 @@
 /* This file is for your main application CSS */
 @import "./phoenix.css";
 
-.user-message, .own-message {
-    /* display: inline-block; */
-    width: 50%;
-    padding: 0.5em 1em;
+.chat-message {
+  display: flex;
+  flex-direction: column;
+}
+
+.user-message,
+.own-message,
+.system-message,
+.username {
+  padding: 0.5em 1em;
+  margin: 0;
+  margin-top: 0.15em;
+  text-align: left;
+  display: inline-block;
+  max-width: 75%;
+}
+
+.user-message,
+.own-message {
+  border-radius: 1em;
+}
+
+
+.user-message,
+.username {
+  margin-right: auto;
 }
 
 .user-message {
-    border: 2px solid red;
-    margin-left: auto;
-    margin-right: 0;
+  background-color: #ddd;
 }
 
 .own-message {
-    border: 2px solid green;
-    margin-right: auto;
-    margin-left: 0;
+  background-color: #99B2DD;
+  margin-left: auto;
+  color: white;
+}
+
+.system-message,
+.username {
+  color: #aaa;
+  padding: 0 0.5em;
+  text-align: center;
+}
+
+.system-message {
+  margin: auto;
+  font-style: italic;
+}
+
+.username {
+  font-size: small;
 }
 
 .scroll-view {
@@ -42,10 +78,6 @@
 #chat-messages {
     flex-grow: 1;
     padding: 1em;
-}
-
-#chat-messages p {
-    margin: 0;
 }
 
 #user-list {

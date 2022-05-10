@@ -5,7 +5,7 @@
   <div id="message-container">
     <div id="chat-messages" class="thin-border scroll-view" phx-update="append">
       <%= for message <- @messages do %>
-        <%= Map.put(message, :current_user, username)
+        <%= Map.put(message, :user, username)
             |> display_message() %>
       <% end %>
     </div>

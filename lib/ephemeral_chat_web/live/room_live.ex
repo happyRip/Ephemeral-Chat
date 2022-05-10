@@ -74,39 +74,47 @@ defmodule EphemeralChatWeb.RoomLive do
      )}
   end
 
-  def display_message(%{type: :system, uuid: uuid, content: content}) do
+  def display_message(%{uuid: uuid, content: content, author: :system}) do
     ~E"""
-    <p id="<%= uuid %>" class="system-message" style="text-align:center">
-      <em><%= content %></em>
-    </p>
+    <div id="<%= uuid %>_div" class="chat-message">
+      <p id="<%= uuid %>" class="system-message" style="text-align:center">
+        <%= content %>
+      </p>
+    </div>
     """
   end
 
-  def display_message(%{uuid: uuid, content: content, username: username,
-  current_user: current_user}) when username == current_user do
+  def display_message(%{uuid: uuid, content: content, author: author, user: user})
+      when author == user do
     ~E"""
-    <p id="<%= uuid %>" class="own-message">
-      <%= content %>
-    </p>
+    <div id="<%= uuid %>_div" class="chat-message">
+      <p id="<%= uuid %>" class="own-message">
+        <%= content %>
+      </p>
+    </div>
     """
   end
 
-  def display_message(%{uuid: uuid, content: content, username: username}) do
+  def display_message(%{uuid: uuid, content: content, author: username}) do
     ~E"""
-    <p id="<%= uuid %>" class="user-message">
-      <small><%= username %></small><br />
-      <%= content %>
-    </p>
+    <div id="<%= uuid %>_div" class="chat-message">
+      <p id="<%= uuid %>_usr" class="username">
+        <%= username %>
+      </p>
+      <p id="<%= uuid %>" class="user-message">
+        <%= content %>
+      </p>
+    </div>
     """
   end
 
   defp create_message(content, username \\ :system)
 
   defp create_message(content, :system) do
-    %{type: :system, uuid: UUID.uuid4(), content: content}
+    %{uuid: UUID.uuid4(), content: content, author: :system}
   end
 
   defp create_message(content, username) do
-    %{uuid: UUID.uuid4(), content: content, username: username}
+    %{uuid: UUID.uuid4(), content: content, author: username}
   end
 end
