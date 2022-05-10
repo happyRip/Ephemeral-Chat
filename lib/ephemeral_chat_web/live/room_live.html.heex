@@ -1,15 +1,16 @@
 <p>Currently chatting in <strong><%= @room_id %></strong>
-    as <strong><%= @username %></strong></p>
+    as <strong><%= username = @username %></strong></p>
 
 <div id="chat-container">
   <div id="message-container">
-    <div id="chat-messages" phx-update="append">
+    <div id="chat-messages" class="thin-border scroll-view" phx-update="append">
       <%= for message <- @messages do %>
-        <%= display_message(message) %>
+        <%= Map.put(message, :user, username)
+            |> display_message() %>
       <% end %>
     </div>
 
-    <div id="user-list">
+    <div id="user-list" class="thin-border scroll-view">
       <h3>Users online</h3>
       <%= for user <- @user_list do %>
         <p><%= user %></p>
@@ -20,7 +21,7 @@
   <div id="form-container">
     <%= f = form_for :chat, "#", id: "chat-form", phx_submit: :submit_message,
     phx_change: :form_updated %>
-      <%= text_input f, :message, value: @message, placeholder: "Enter your message...", id: "text-input" %>
+      <%= text_input f, :message, value: @message, placeholder: "Enter your message...", id: "text-input", class: "thin-border" %>
   </div>
 </div>
 

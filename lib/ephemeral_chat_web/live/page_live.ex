@@ -8,7 +8,7 @@ defmodule EphemeralChatWeb.PageLive do
 
   @impl true
   def handle_event("random-room", _params, socket) do
-    random_slug  = MnemonicSlugs.generate_slug(4)
+    random_slug = MnemonicSlugs.generate_slug(4)
     room_url = "/" <> random_slug
     {:noreply, push_redirect(socket, to: room_url)}
   end

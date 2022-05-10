@@ -1,6 +1,68 @@
 /* This file is for your main application CSS */
 @import "./phoenix.css";
 
+.chat-message {
+  display: flex;
+  flex-direction: column;
+}
+
+.user-message,
+.own-message,
+.system-message,
+.username {
+  padding: 0.5em 1em;
+  margin: 0;
+  margin-top: 0.15em;
+  text-align: left;
+  display: inline-block;
+  max-width: 75%;
+}
+
+.user-message,
+.own-message {
+  border-radius: 1em;
+}
+
+
+.user-message,
+.username {
+  margin-right: auto;
+}
+
+.user-message {
+  background-color: #ddd;
+}
+
+.own-message {
+  background-color: #99B2DD;
+  margin-left: auto;
+  color: white;
+}
+
+.system-message,
+.username {
+  color: #aaa;
+  padding: 0 0.5em;
+  text-align: center;
+}
+
+.system-message {
+  margin: auto;
+  font-style: italic;
+}
+
+.username {
+  font-size: small;
+}
+
+.scroll-view {
+    overflow-y: auto;
+}
+
+.thin-border {
+    border: 1px solid #cccccc;
+}
+
 #chat-container {
     display: flex;
     flex-direction: column;
@@ -10,24 +72,15 @@
     display: flex;
     justify-content: space-between;
     gap: 1em;
-    height: 65vh;
+    height: 70vh;
 }
 
 #chat-messages {
-    border: 1px solid #cccccc;
     flex-grow: 1;
     padding: 1em;
-    overflow-y: scroll;
-    overflow: auto;
-}
-
-#chat-messages p {
-    margin: 0;
-    padding: 0;
 }
 
 #user-list {
-    border: 1px solid #cccccc;
     padding: 1em;
 }
 
@@ -41,7 +94,6 @@
 }
 
 #text-input {
-    border: 1px solid #cccccc;
     border-radius: 0;
 }
 
