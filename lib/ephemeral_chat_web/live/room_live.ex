@@ -3,6 +3,9 @@ defmodule EphemeralChatWeb.RoomLive do
   alias EphemeralChatWeb, as: ChatWeb
   alias ChatWeb.{Endpoint, Presence}
 
+  require EphemeralChat.Messager
+  alias EphemeralChat.Messager
+
   @impl true
   def mount(%{"id" => room_id}, _session, socket) do
     topic = "room:" <> room_id
@@ -28,8 +31,8 @@ defmodule EphemeralChatWeb.RoomLive do
   @impl true
   def handle_event("submit_message", %{"chat" => %{"message" => message}}, socket) do
     username = socket.assigns.username
-    message = create_message(message, username)
-    ChatWeb.Endpoint.broadcast!(socket.assigns.topic, "new-message", message)
+    message = Messager.new_message(message, username)
+    ChatWeb.Endpoint.broadcast!(socket.assigns.topic, "new_message", message)
 
     {:noreply, assign(socket, message: "")}
   end
@@ -40,81 +43,79 @@ defmodule EphemeralChatWeb.RoomLive do
   end
 
   @impl true
-  def handle_info(%{event: "new-message", payload: message}, socket) do
-    {:noreply, assign(socket, messages: [message])}
+  def handle_info(%{event: "new_message", payload: message}, socket) do
+    messages = Messager.append(socket.assigns.messages, message)
+
+    {:noreply, assign(socket, messages: messages)}
   end
 
   @impl true
-  def handle_info(
-        %{event: "presence_diff", payload: %{joins: joins, leaves: leaves}},
-        socket
-      ) do
-    join_messages =
-      joins
-      |> Map.keys()
-      |> Enum.map(fn username ->
-        create_message("#{username} joined")
-      end)
+  def handle_info(%{event: "presence_diff", payload: %{joins: joins}}, socket)
+      when joins != %{} do
+    [username] = Map.keys(joins)
+    message = Messager.new_message("#{username} joined")
 
-    leave_messages =
-      leaves
-      |> Map.keys()
-      |> Enum.map(fn username ->
-        create_message("#{username} left")
-      end)
+    messages =
+      socket.assigns.messages
+      |> Messager.append(message)
 
     user_list =
-      Presence.list(socket.assigns.topic)
+      socket.assigns.topic
+      |> Presence.list()
       |> Map.keys()
 
-    {:noreply,
-     assign(socket,
-       messages: join_messages ++ leave_messages,
-       user_list: user_list
-     )}
+    {:noreply, assign(socket, messages: messages, user_list: user_list)}
+  end
+
+  @impl true
+  def handle_info(%{event: "presence_diff", payload: %{leaves: leaves}}, socket)
+      when leaves != %{} do
+    [username] = Map.keys(leaves)
+    message = Messager.new_message("#{username} left")
+
+    messages =
+      socket.assigns.messages
+      |> Messager.append(message)
+
+    user_list =
+      socket.assigns.topic
+      |> Presence.list()
+      |> Map.keys()
+
+    {:noreply, assign(socket, messages: messages, user_list: user_list)}
   end
 
   def display_message(%{uuid: uuid, content: content, author: :system}) do
     ~E"""
-    <div id="<%= uuid %>_div" class="chat-message">
-      <p id="<%= uuid %>" class="system-message" style="text-align:center">
-        <%= content %>
-      </p>
-    </div>
+    <p id="<%= uuid %>" class="system-message" style="text-align:center">
+      <%= content %>
+    </p>
     """
   end
 
   def display_message(%{uuid: uuid, content: content, author: author, user: user})
       when author == user do
     ~E"""
-    <div id="<%= uuid %>_div" class="chat-message">
-      <p id="<%= uuid %>" class="own-message">
-        <%= content %>
-      </p>
-    </div>
+    <p id="<%= uuid %>" class="own-message">
+      <%= content %>
+    </p>
     """
   end
 
   def display_message(%{uuid: uuid, content: content, author: username}) do
     ~E"""
-    <div id="<%= uuid %>_div" class="chat-message">
-      <p id="<%= uuid %>_usr" class="username">
-        <%= username %>
-      </p>
-      <p id="<%= uuid %>" class="user-message">
-        <%= content %>
-      </p>
-    </div>
+    <p id="<%= uuid %>" class="user-message">
+      <%= content %>
+    </p>
     """
   end
 
-  defp create_message(content, username \\ :system)
-
-  defp create_message(content, :system) do
-    %{uuid: UUID.uuid4(), content: content, author: :system}
-  end
-
-  defp create_message(content, username) do
-    %{uuid: UUID.uuid4(), content: content, author: username}
+  def display_author(%{author: author, uuid: uuid}) do
+    ~E"""
+    <p id="<%= uuid %>_usr" class="username">
+      <%= author %>
+    </p>
+    """
   end
 end
+
