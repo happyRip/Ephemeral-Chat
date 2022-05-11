@@ -19,17 +19,17 @@ defmodule EphemeralChatWeb.RoomLive do
        topic: topic,
        username: username,
        message: "",
-       messages: [],
+       messages: Messager.new_container(),
        user_list: [],
-       temporary_assigns: [messages: []]
+       temporary_assigns: [messages: Messager.new_container()]
      )}
   end
 
   @impl true
   def handle_event("submit_message", %{"chat" => %{"message" => message}}, socket) do
     username = socket.assigns.username
-    message = create_message(message, username)
-    ChatWeb.Endpoint.broadcast!(socket.assigns.topic, "new-message", message)
+    message = Messager.new_message(message, username)
+    ChatWeb.Endpoint.broadcast!(socket.assigns.topic, "new_message", message)
 
     {:noreply, assign(socket, message: "")}
   end
@@ -40,8 +40,9 @@ defmodule EphemeralChatWeb.RoomLive do
   end
 
   @impl true
-  def handle_info(%{event: "new-message", payload: message}, socket) do
-    {:noreply, assign(socket, messages: [message])}
+  def handle_info(%{event: "new_message", payload: message}, socket) do
+    messages = Messager.append(socket.messages, message)
+    {:noreply, assign(socket, messages: messages)}
   end
 
   @impl true
@@ -53,14 +54,14 @@ defmodule EphemeralChatWeb.RoomLive do
       joins
       |> Map.keys()
       |> Enum.map(fn username ->
-        create_message("#{username} joined")
+        Messager.new_message("#{username} joined")
       end)
 
     leave_messages =
       leaves
       |> Map.keys()
       |> Enum.map(fn username ->
-        create_message("#{username} left")
+        Messager.new_message("#{username} left")
       end)
 
     user_list =
@@ -108,13 +109,42 @@ defmodule EphemeralChatWeb.RoomLive do
     """
   end
 
-  defp create_message(content, username \\ :system)
+end
 
-  defp create_message(content, :system) do
+defmodule Messager do
+
+  def new_message(content, author \\ :system)
+
+  def new_message(content, :system) do
     %{uuid: UUID.uuid4(), content: content, author: :system}
   end
 
-  defp create_message(content, username) do
-    %{uuid: UUID.uuid4(), content: content, author: username}
+  def new_message(content, author) do
+    %{uuid: UUID.uuid4(), content: content, author: author}
+  end
+
+  def append([{author, messages} | tail], message) when author == message.author do
+    message = Map.delete(message, :author)
+
+    [{author, [message | messages]} | tail]
+  end
+
+  def append({author, messages}, message) when author == message.author do
+    message = Map.delete(message, :author)
+
+    [{author, [message | messages]}]
+  end
+
+  def append(messages, message) do
+    [new_container(message) | messages]
+  end
+
+  def new_container(), do: {}
+
+  def new_container(message) do
+    author = message.author
+    message = Map.delete(message, :author)
+
+    {author, [message]}
   end
 end
