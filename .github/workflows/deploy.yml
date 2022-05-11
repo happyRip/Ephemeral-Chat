@@ -8,6 +8,8 @@ on:
       - '**.yml'
       - '!.github/workflows/deploy.yml'
   pull_request:
+    branches:
+      - main
     paths-ignore:
       - '**.md'
       - '**.yml'
