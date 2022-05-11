@@ -1,12 +1,23 @@
 <p>Currently chatting in <strong><%= @room_id %></strong>
-    as <strong><%= username = @username %></strong></p>
+    as <strong><%= user = @username %></strong></p>
 
 <div id="chat-container">
   <div id="message-container">
     <div id="chat-messages" class="thin-border scroll-view" phx-update="append">
-      <%= for message <- @messages do %>
-        <%= Map.put(message, :user, username)
-            |> display_message() %>
+      <%= for %{author: author, uuid: uuid, messages: messages} <- Enum.reverse(@messages) do %>
+        <div id="{uuid}_div" class="chat-message">
+        <%= if author != user && author != :system do
+              display_author(%{author: author, uuid: uuid})
+            end %>
+        <%= for message <- Enum.reverse(messages) do %>
+          <%=
+            message
+            |> Map.put(:user, user)
+            |> Map.put(:author, author)
+            |> display_message()
+          %>
+        <% end %>
+        </div>
       <% end %>
     </div>
 

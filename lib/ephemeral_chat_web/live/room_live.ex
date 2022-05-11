@@ -19,9 +19,9 @@ defmodule EphemeralChatWeb.RoomLive do
        topic: topic,
        username: username,
        message: "",
-       messages: Messager.new_container(),
+       messages: [],
        user_list: [],
-       temporary_assigns: [messages: Messager.new_container()]
+       temporary_assigns: [messages: []]
      )}
   end
 
@@ -41,78 +41,82 @@ defmodule EphemeralChatWeb.RoomLive do
 
   @impl true
   def handle_info(%{event: "new_message", payload: message}, socket) do
-    messages = Messager.append(socket.messages, message)
+    messages = Messager.append(socket.assigns.messages, message)
+
     {:noreply, assign(socket, messages: messages)}
   end
 
   @impl true
-  def handle_info(
-        %{event: "presence_diff", payload: %{joins: joins, leaves: leaves}},
-        socket
-      ) do
-    join_messages =
-      joins
-      |> Map.keys()
-      |> Enum.map(fn username ->
-        Messager.new_message("#{username} joined")
-      end)
+  def handle_info(%{event: "presence_diff", payload: %{joins: joins}}, socket)
+      when joins != %{} do
+    [username] = Map.keys(joins)
+    message = Messager.new_message("#{username} joined")
 
-    leave_messages =
-      leaves
-      |> Map.keys()
-      |> Enum.map(fn username ->
-        Messager.new_message("#{username} left")
-      end)
+    messages =
+      socket.assigns.messages
+      |> Messager.append(message)
 
     user_list =
-      Presence.list(socket.assigns.topic)
+      socket.assigns.topic
+      |> Presence.list()
       |> Map.keys()
 
-    {:noreply,
-     assign(socket,
-       messages: join_messages ++ leave_messages,
-       user_list: user_list
-     )}
+    {:noreply, assign(socket, messages: messages, user_list: user_list)}
+  end
+
+  @impl true
+  def handle_info(%{event: "presence_diff", payload: %{leaves: leaves}}, socket)
+      when leaves != %{} do
+    [username] = Map.keys(leaves)
+    message = Messager.new_message("#{username} left")
+
+    messages =
+      socket.assigns.messages
+      |> Messager.append(message)
+
+    user_list =
+      socket.assigns.topic
+      |> Presence.list()
+      |> Map.keys()
+
+    {:noreply, assign(socket, messages: messages, user_list: user_list)}
   end
 
   def display_message(%{uuid: uuid, content: content, author: :system}) do
     ~E"""
-    <div id="<%= uuid %>_div" class="chat-message">
-      <p id="<%= uuid %>" class="system-message" style="text-align:center">
-        <%= content %>
-      </p>
-    </div>
+    <p id="<%= uuid %>" class="system-message" style="text-align:center">
+      <%= content %>
+    </p>
     """
   end
 
   def display_message(%{uuid: uuid, content: content, author: author, user: user})
       when author == user do
     ~E"""
-    <div id="<%= uuid %>_div" class="chat-message">
-      <p id="<%= uuid %>" class="own-message">
-        <%= content %>
-      </p>
-    </div>
+    <p id="<%= uuid %>" class="own-message">
+      <%= content %>
+    </p>
     """
   end
 
   def display_message(%{uuid: uuid, content: content, author: username}) do
     ~E"""
-    <div id="<%= uuid %>_div" class="chat-message">
-      <p id="<%= uuid %>_usr" class="username">
-        <%= username %>
-      </p>
-      <p id="<%= uuid %>" class="user-message">
-        <%= content %>
-      </p>
-    </div>
+    <p id="<%= uuid %>" class="user-message">
+      <%= content %>
+    </p>
     """
   end
 
+  def display_author(%{author: author, uuid: uuid}) do
+    ~E"""
+    <p id="<%= uuid %>_usr" class="username">
+      <%= author %>
+    </p>
+    """
+  end
 end
 
 defmodule Messager do
-
   def new_message(content, author \\ :system)
 
   def new_message(content, :system) do
@@ -123,28 +127,32 @@ defmodule Messager do
     %{uuid: UUID.uuid4(), content: content, author: author}
   end
 
-  def append([{author, messages} | tail], message) when author == message.author do
+  def append(messages, []), do: messages
+
+  def append([%{author: author, uuid: uuid, messages: messages} | tail], message)
+      when author == message.author do
     message = Map.delete(message, :author)
 
-    [{author, [message | messages]} | tail]
+    [%{author: author, uuid: uuid, messages: [message | messages]} | tail]
   end
 
-  def append({author, messages}, message) when author == message.author do
+  def append(%{author: author, uuid: uuid, messages: messages}, message)
+      when author == message.author do
     message = Map.delete(message, :author)
 
-    [{author, [message | messages]}]
+    [%{author: author, uuid: uuid, messages: [message | messages]}]
   end
 
   def append(messages, message) do
     [new_container(message) | messages]
   end
 
-  def new_container(), do: {}
+  def new_container(), do: %{}
 
   def new_container(message) do
-    author = message.author
-    message = Map.delete(message, :author)
+    uuid = UUID.uuid4()
+    {author, message} = Map.pop(message, :author)
 
-    {author, [message]}
+    %{author: author, uuid: uuid, messages: [message]}
   end
 end
