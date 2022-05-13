@@ -10,6 +10,7 @@
 
 .user-message,
 .own-message,
+.admin-message,
 .system-message,
 .username {
   padding: 0.35em 0.7em;
@@ -20,18 +21,51 @@
 }
 
 .user-message,
+.admin-message {
+  border-radius: 0.5em 1em 1em 0.5em;
+}
+
 .own-message {
+  border-radius: 1em 0.5em 0.5em 1em;
+}
+
+.own-message:first-child {
+  border-radius: 1em 1em 0.5em 1em;
+}
+
+.own-message:last-child {
+  border-radius: 1em 0.5em 1em 1em;
+}
+
+.own-message:only-child {
   border-radius: 1em;
 }
 
+.user-message:first-child {
+  border-radius: 1em 1em 1em 0.5em;
+}
+
+.user-message:last-child {
+  border-radius: 0.5em 1em 1em 1em;
+}
+
+.user-message:only-child {
+  border-radius: 1em;
+}
 
 .user-message,
+.admin-message,
 .username {
   margin-right: auto;
 }
 
 .user-message {
   background-color: #ddd;
+}
+
+.admin-message {
+  background-color: #FFA69E;
+  color: white;
 }
 
 .own-message {
@@ -58,11 +92,22 @@
 }
 
 .scroll-view {
-    overflow-y: auto;
+  overflow-y: auto;
+  overscroll-behavior-y: contain;
+  scroll-snap-type: y proximity;
+}
+
+.scroll-view > div:first-child {
+  padding-top: 1em;
+}
+
+.scroll-view > div:last-child {
+  scroll-snap-align: end;
+  padding-bottom: 1em;
 }
 
 .thin-border {
-    border: 1px solid #ccc;
+  border: 1px solid #ccc;
 }
 
 #chat-container {
@@ -78,11 +123,11 @@
 }
 
 #chat-messages {
-    flex-grow: 1;
-    padding: 1em;
-    display: flex;
-    flex-direction: column;
+    padding: 0 1em;
     gap: 1em;
+    display: flex;
+    flex-grow: 1;
+    flex-direction: column;
 }
 
 #user-list {
