@@ -38,4 +38,3 @@ defmodule EphemeralChat.Messager do
     %{author: author, uuid: uuid, messages: [message]}
   end
 end
-

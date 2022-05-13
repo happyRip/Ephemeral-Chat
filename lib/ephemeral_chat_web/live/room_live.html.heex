@@ -1,14 +1,14 @@
-<p>Currently chatting in <strong><%= @room_id %></strong>
+<p id="current_user" phx-click="admin_button">Currently chatting in <strong><%= @room_id %></strong>
     as <strong><%= user = @username %></strong></p>
 
 <div id="chat-container">
   <div id="message-container">
     <div id="chat-messages" class="thin-border scroll-view" phx-update="append">
       <%= for %{author: author, uuid: uuid, messages: messages} <- Enum.reverse(@messages) do %>
-        <div id="{uuid}_div" class="chat-message">
         <%= if author != user && author != :system do
               display_author(%{author: author, uuid: uuid})
             end %>
+        <div id="{uuid}_div" class="chat-message">
         <%= for message <- Enum.reverse(messages) do %>
           <%=
             message
@@ -23,8 +23,8 @@
 
     <div id="user-list" class="thin-border scroll-view">
       <h3>Users online</h3>
-      <%= for user <- @user_list do %>
-        <p><%= user %></p>
+      <%= for username <- @user_list do %>
+        <%= username |> display_username(user) %>
       <% end %>
     </div>
   </div>
