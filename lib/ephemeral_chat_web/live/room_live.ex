@@ -117,43 +117,43 @@ defmodule EphemeralChatWeb.RoomLive do
 
   def display_message(%{uuid: uuid, content: content, author: :system}) do
     ~E"""
-    <p id="<%= uuid %>" class="system-message" style="text-align:center">
+    <div id="<%= uuid %>" class="system-message" style="text-align:center">
       <%= content %>
-    </p>
+    </div>
     """
   end
 
   def display_message(%{uuid: uuid, content: content, author: author, user: user})
       when author == user do
     ~E"""
-    <p id="<%= uuid %>" class="own-message">
+    <div id="<%= uuid %>" class="own-message">
       <%= content %>
-    </p>
+    </div>
     """
   end
 
   def display_message(%{uuid: uuid, content: content, author: :admin, user: user}) do
     ~E"""
-    <p id="<%= uuid %>" class="admin-message">
+    <div id="<%= uuid %>" class="admin-message">
       <%= content %>
-    </p>
+    </div>
     """
   end
 
   def display_message(%{uuid: uuid, content: content, author: author, user: user})
       when user != :admin do
     ~E"""
-    <p id="<%= uuid %>" class="user-message">
+    <div id="<%= uuid %>" class="user-message">
       <em>content hidden</em>
-    </p>
+    </div>
     """
   end
 
   def display_message(%{uuid: uuid, content: content, author: username}) do
     ~E"""
-    <p id="<%= uuid %>" class="user-message">
+    <div id="<%= uuid %>" class="user-message">
       <%= content %>
-    </p>
+    </div>
     """
   end
 

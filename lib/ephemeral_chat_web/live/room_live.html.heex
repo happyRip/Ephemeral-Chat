@@ -5,18 +5,18 @@
   <div id="message-container">
     <div id="chat-messages" class="thin-border scroll-view" phx-update="append">
       <%= for %{author: author, uuid: uuid, messages: messages} <- Enum.reverse(@messages) do %>
-        <%= if author != user && author != :system do
-              display_author(%{author: author, uuid: uuid})
-            end %>
-        <div id="{uuid}_div" class="chat-message">
-        <%= for message <- Enum.reverse(messages) do %>
-          <%=
-            message
-            |> Map.put(:user, user)
-            |> Map.put(:author, author)
-            |> display_message()
-          %>
-        <% end %>
+        <div id="{uuid}" class="chat-message">
+          <%= if author != user && author != :system do
+                display_author(%{author: author, uuid: uuid})
+              end %>
+          <%= for message <- Enum.reverse(messages) do %>
+            <%=
+              message
+              |> Map.put(:user, user)
+              |> Map.put(:author, author)
+              |> display_message()
+            %>
+          <% end %>
         </div>
       <% end %>
     </div>
