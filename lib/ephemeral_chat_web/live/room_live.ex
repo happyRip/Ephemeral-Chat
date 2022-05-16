@@ -1,10 +1,7 @@
 defmodule EphemeralChatWeb.RoomLive do
   use EphemeralChatWeb, :live_view
-  alias EphemeralChatWeb, as: ChatWeb
-  alias ChatWeb.{Endpoint, Presence}
-
-  require EphemeralChat.Messager
-  alias EphemeralChat.Messager
+  alias EphemeralChatWeb, as: Web
+  alias Web.{Endpoint, Message, Presence}
 
   @impl true
   def mount(%{"id" => room_id}, _session, socket) do
@@ -31,8 +28,8 @@ defmodule EphemeralChatWeb.RoomLive do
   @impl true
   def handle_event("submit_message", %{"chat" => %{"message" => message}}, socket) do
     username = socket.assigns.username
-    message = Messager.new_message(message, username)
-    ChatWeb.Endpoint.broadcast!(socket.assigns.topic, "new_message", message)
+    message = Message.new_message(message, username)
+    Endpoint.broadcast!(socket.assigns.topic, "new_message", message)
 
     {:noreply, assign(socket, message: "")}
   end
@@ -44,7 +41,7 @@ defmodule EphemeralChatWeb.RoomLive do
 
   @impl true
   def handle_info(%{event: "new_message", payload: message}, socket) do
-    messages = Messager.append(socket.assigns.messages, message)
+    messages = Message.append(socket.assigns.messages, message)
 
     {:noreply, assign(socket, messages: messages)}
   end
@@ -53,11 +50,11 @@ defmodule EphemeralChatWeb.RoomLive do
   def handle_info(%{event: "presence_diff", payload: %{joins: joins}}, socket)
       when joins != %{} do
     [username] = Map.keys(joins)
-    message = Messager.new_message("#{username} joined")
+    message = Message.new_message("#{username} joined")
 
     messages =
       socket.assigns.messages
-      |> Messager.append(message)
+      |> Message.append(message)
 
     user_list =
       socket.assigns.topic
@@ -71,11 +68,11 @@ defmodule EphemeralChatWeb.RoomLive do
   def handle_info(%{event: "presence_diff", payload: %{leaves: leaves}}, socket)
       when leaves != %{} do
     [username] = Map.keys(leaves)
-    message = Messager.new_message("#{username} left")
+    message = Message.new_message("#{username} left")
 
     messages =
       socket.assigns.messages
-      |> Messager.append(message)
+      |> Message.append(message)
 
     user_list =
       socket.assigns.topic
