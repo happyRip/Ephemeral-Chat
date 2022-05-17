@@ -1,4 +1,4 @@
-defmodule EphemeralChat.Messager do
+defmodule EphemeralChatWeb.Message do
   def new_message(content, author \\ :system)
 
   def new_message(content, :system) do
