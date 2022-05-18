@@ -36,7 +36,7 @@ Now head over to http://localhost:4000/ and check if the app is working correctl
 You can setup an alias to run `mix` commands through the docker container
 
 ```
-alias mix='docker-compose run --rm web mix'
+alias mix='docker compose run --rm web mix'
 ```
 
 If you encounter any problems please [create an issue](https://github.com/happyRip/Ephemeral-Chat/issues/new/choose).
