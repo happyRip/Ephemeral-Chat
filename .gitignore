@@ -32,3 +32,6 @@ ephemeral_chat-*.tar
 npm-debug.log
 /assets/node_modules/
 
+# database data folder
+.pgdata
+
