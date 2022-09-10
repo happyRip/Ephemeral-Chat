@@ -2,11 +2,13 @@ services:
   web:
     build:
       context: .
-      dockerfile: dev.Dockerfile
+      dockerfile: Dockerfile
+      args:
+        MIX_ENV: "${MIX_ENV}"
     volumes:
       - .:/app
     ports:
-      - '4000:4000'
+      - "4000:4000"
     depends_on:
       - db
   db:

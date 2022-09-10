@@ -19,7 +19,12 @@ ARG DEBIAN_VERSION=bullseye-20210902-slim
 ARG BUILDER_IMAGE="hexpm/elixir:${ELIXIR_VERSION}-erlang-${OTP_VERSION}-debian-${DEBIAN_VERSION}"
 ARG RUNNER_IMAGE="debian:${DEBIAN_VERSION}"
 
+# set build ENV
+ARG MIX_ENV='prod'
+
 FROM ${BUILDER_IMAGE} as builder
+
+ARG MIX_ENV
 
 # install build dependencies
 RUN apt-get update -y && apt-get install -y build-essential git \
@@ -31,9 +36,6 @@ WORKDIR /app
 # install hex + rebar
 RUN mix local.hex --force && \
     mix local.rebar --force
-
-# set build ENV
-ENV MIX_ENV="prod"
 
 # install mix dependencies
 COPY mix.exs mix.lock ./
@@ -68,6 +70,8 @@ RUN mix release
 # the compiled release and other runtime necessities
 FROM ${RUNNER_IMAGE}
 
+ARG MIX_ENV
+
 RUN apt-get update -y && apt-get install -y libstdc++6 openssl libncurses5 locales \
   && apt-get clean && rm -f /var/lib/apt/lists/*_*
 
@@ -81,15 +85,13 @@ ENV LC_ALL en_US.UTF-8
 WORKDIR "/app"
 RUN chown nobody /app
 
-# set runner ENV
-ENV MIX_ENV="prod"
-
 # Only copy the final release from the build stage
 COPY --from=builder --chown=nobody:root /app/_build/${MIX_ENV}/rel/ephemeral_chat ./
 
 USER nobody
 
 CMD ["/app/bin/server"]
+
 # Appended by flyctl
 ENV ECTO_IPV6 true
 ENV ERL_AFLAGS "-proto_dist inet6_tcp"
