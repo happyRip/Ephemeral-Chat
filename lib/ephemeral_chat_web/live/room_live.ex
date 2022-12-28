@@ -82,34 +82,34 @@ defmodule EphemeralChatWeb.RoomLive do
     {:noreply, assign(socket, messages: messages, user_list: user_list)}
   end
 
-  def display_message(%{uuid: uuid, content: content, author: :system}) do
-    ~E"""
-    <p id="<%= uuid %>" class="system-message" style="text-align:center">
+  def display_message(assigns = %{uuid: uuid, content: content, author: :system}) do
+    ~H"""
+    <p id="{ uuid }" class="system-message" style="text-align:center">
       <%= content %>
     </p>
     """
   end
 
-  def display_message(%{uuid: uuid, content: content, author: author, user: user})
+  def display_message(assigns = %{uuid: uuid, content: content, author: author, user: user})
       when author == user do
-    ~E"""
-    <p id="<%= uuid %>" class="own-message">
+    ~H"""
+    <p id="{ uuid }" class="own-message">
       <%= content %>
     </p>
     """
   end
 
-  def display_message(%{uuid: uuid, content: content, author: username}) do
-    ~E"""
-    <p id="<%= uuid %>" class="user-message">
+  def display_message(assigns = %{uuid: uuid, content: content, author: username}) do
+    ~H"""
+    <p id="{ uuid }" class="user-message">
       <%= content %>
     </p>
     """
   end
 
-  def display_author(%{author: author, uuid: uuid}) do
-    ~E"""
-    <p id="<%= uuid %>_usr" class="username">
+  def display_author(assigns = %{author: author, uuid: uuid}) do
+    ~H"""
+    <p id="{ uuid }_usr" class="username">
       <%= author %>
     </p>
     """
