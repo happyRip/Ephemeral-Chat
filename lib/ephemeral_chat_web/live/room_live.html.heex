@@ -32,7 +32,7 @@
   <div id="form-container">
     <%= f = form_for :chat, "#", id: "chat-form", phx_submit: :submit_message,
     phx_change: :form_updated %>
-      <%= text_input f, :message, value: @message, placeholder: "Enter your message...", id: "text-input", class: "thin-border" %>
+      <%= text_input f, :message, value: @message, placeholder: "Enter your message...", id: "text-input", class: "thin-border", autocomplete: "off" %>
   </div>
 </div>
 

@@ -107,7 +107,7 @@ defmodule EphemeralChatWeb.RoomLive do
     """
   end
 
-  def display_author(assigns = %{author: author, uuid: uuid}) do
+  def display_author(assigns = %{uuid: uuid, author: author}) do
     ~H"""
     <p id="{ uuid }_usr" class="username">
       <%= author %>
